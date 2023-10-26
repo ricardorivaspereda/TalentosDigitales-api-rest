@@ -7,4 +7,7 @@ const properties = {
     database: 'biblioteca'
 };
 
+/*xporto mi conexion a la BD*/
 export const pool = mysqlConnection.createPool(properties);
+
+
