@@ -52,11 +52,29 @@ class LibroController{
     }
 
 
-    async update(req,res){
-        const libro = req.body;
-        const [result] = await pool.query(`UPDATE Libros SET nombre=(?), autor=(?), categoria=(?), año-publicacion=(?), ISBN=(?) WHERE id=(?)`,[libro.nombre,libro.autor,libro.categoria,libro.año-publicacion,libro.ISBN, libro.id]);
-        res.json({"Registros actualizados": result.changedRows});
-    }
+    async update(req, res) {
+        try {
+          const libro = req.body;
+      
+          /* Verifico si el libro con el ID proporcionado existe*/
+          const [checkResult] = await pool.query('SELECT * FROM Libros WHERE id = ?', [libro.id]);
+      
+          if (checkResult.length === 0) {
+            throw new Error("El libro con el ID proporcionado no existe en la base de datos");
+          }
+      
+          const [result] = await pool.query(
+            `UPDATE Libros SET nombre=?, autor=?, categoria=?, año-publicacion=?, ISBN=? WHERE id=?`,
+            [libro.nombre, libro.autor, libro.categoria, libro.año-publicacion, libro.ISBN, libro.id]
+          );
+      
+          res.json({ "Registros actualizados": result.changedRows });
+        } catch (error) {
+          console.error(error);
+          res.status(400).json({ message: error.message });
+        }
+      }
+      
 }
 
 export const libro = new LibroController();
