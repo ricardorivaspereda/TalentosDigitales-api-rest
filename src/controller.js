@@ -34,9 +34,21 @@ class LibroController{
 
 
     async delete(req,res){
-        const libro = req.body;
-        const [result] = await pool.query(`DELETE FROM Libros WHERE id=(?)`,[libro.ISBN]);
+        try{
+            const libro = req.body;
+            /*consulta la bd para verificar si el libro existe por ISBN*/
+            const [checkResult] = await pool.query('SELECT * FROM Libros WHERE ISBN = ?', [libro.ISBN]);
+            /* si no se enuentra ningun libro(longitud del resultado =O)*/
+            if (checkResult.length === 0) {
+                throw new Error("El libro con el ISBN proporcionado no existe en la base de datos");
+              }
+        
+        const [result] = await pool.query(`DELETE FROM Libros WHERE ISBN=(?)`,[libro.ISBN]);
         res.json({"Registros eliminados": result.affectedRows});
+    }catch (error) {
+        console.error(error);
+        res.status(400).json({ message: error.message });
+      }
     }
 
 
