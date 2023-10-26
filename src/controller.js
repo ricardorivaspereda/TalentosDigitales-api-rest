@@ -18,10 +18,20 @@ class LibroController{
 
 
     async add(req,res){
-        const libro = req.body;
+        try {
+            const libro = req.body;
+            if (!libro.precio) {
+                throw new Error("El atributo 'precio' no corresponde a la descripcion");
+            }
+        
         const [result] = await pool.query(`INSERT INTO Libros (nombre,autor,categoria,año-publicacion,ISBN) VALUES (?,?,?;?;?)`,[libro.nombre,libro.autor,libro.categoria,libro.año-publicacion,libro.ISBN]);
         res.json({"Id insertado": result.insertId});
-    }
+        }catch (error) {
+            console.error(error);
+            res.status(400).json({ message: error.message });
+        }
+      }
+
 
     async delete(req,res){
         const libro = req.body;
