@@ -9,11 +9,15 @@ class LibroController{
 
 
     async getOne(req,res) {
+      try{
         const libroId = req.params.id;
         const [result] = await pool.query(`SELECT * FROM libros WHERE id=(?)`,[libro.id]);
         res.json(result);
+      } catch (error) {
+        console.error("Error en la consulta a la base de datos:", error);
+        res.status(500).json({ error: "Error en la consulta a la base de datos" });
     }
-
+    }
 
 
 
