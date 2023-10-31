@@ -25,7 +25,7 @@ class LibroController{
         try {
             const libro = req.body;
             if (!libro.precio) {
-                throw new Error("El atributo ingresado no corresponde a la descripcion");
+                throw new Error("El atributo 'precio' no corresponde a la descripcion");
             }
         
         const [result] = await pool.query(`INSERT INTO Libros (nombre,autor,categoria,año-publicacion,ISBN) VALUES (?,?,?;?;?)`,[libro.nombre,libro.autor,libro.categoria,libro.año-publicacion,libro.ISBN]);
